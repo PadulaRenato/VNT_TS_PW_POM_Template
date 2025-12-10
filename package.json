@@ -1,0 +1,28 @@
+{
+  "name": "playwright-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "clean:results": "rmdir /s /q allure-results && rmdir /s /q screenshots",
+    "test": "npm run clean:results && npx playwright test",
+    "report": "allure generate allure-results --clean -o allure-report && allure open allure-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^10.1.0",
+    "@playwright/test": "^1.50.1",
+    "@types/node": "^22.13.4",
+    "allure-playwright": "^3.2.0",
+    "playwright": "^1.50.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "dotenv": "^16.4.7",
+    "mssql": "^11.0.1"
+  }
+}
