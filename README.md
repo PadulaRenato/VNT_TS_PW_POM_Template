@@ -11,9 +11,13 @@ Entenda onde cada arquivo deve ficar:
 ```text
 📦 raiz
  ┣ 📂 src
+ ┃ ┣ 📂 api         # Testes de API
+ ┃ ┃ ┣ 📂 clients      # Clientes HTTP (Encapsulamento de requisições)
+ ┃ ┃ ┣ 📂 schemas      # Schemas Zod (Validação de contrato)
+ ┃ ┃ ┗ 📂 specs        # Arquivos de teste de API (.spec.ts)
  ┃ ┣ 📂 pages       # Page Objects (Mapeamento de elementos e ações)
  ┃ ┣ 📂 queries     # Consultas ao Banco de Dados (Encapsulamento SQL)
- ┃ ┣ 📂 specs       # Arquivos de teste (.spec.ts)
+ ┃ ┣ 📂 specs       # Arquivos de teste E2E (.spec.ts)
  ┃ ┣ 📂 support     # Configurações auxiliares
  ┃ ┃ ┣ 📜 fixtures.ts      # Injeção de dependência das páginas
  ┃ ┃ ┣ 📜 sqlserverUtils.ts # Utilitário de conexão e execução de queries
@@ -108,6 +112,70 @@ Para manter o SQL organizado e reutilizável, use o padrão de Queries.
     // Exemplo de uso
     const users = await UserQueries.getAdminUser();
     ```
+
+## 🔌 Como Criar um Novo Teste de API
+
+### 1. Crie o Client (`src/api/clients`)
+
+Encapsule as chamadas de API em uma classe dedicada.
+
+```typescript
+import { APIRequestContext, APIResponse } from "@playwright/test";
+
+export class MeuClient {
+  constructor(private request: APIRequestContext) {}
+
+  async getItem(id: string): Promise<APIResponse> {
+    return this.request.get(`https://api.exemplo.com/items/${id}`);
+  }
+}
+```
+
+### 2. Defina o Contrato com Zod (`src/api/schemas`)
+
+Crie schemas para validar a estrutura da resposta.
+
+```typescript
+import { z } from "zod";
+
+export const itemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  price: z.number(),
+});
+```
+
+### 3. Registre na Fixture (`src/support/fixtures.ts`)
+
+Adicione o client na fixture para injetar o `request` context automaticamente.
+
+```typescript
+import { MeuClient } from "../api/clients/meuClient";
+
+export const test = base.extend<MyFixtures>({
+  meuClient: async ({ request }, use) => {
+    await use(new MeuClient(request));
+  },
+});
+```
+
+### 4. Crie o Teste (`src/api/specs`)
+
+Valide status, headers e contrato.
+
+```typescript
+import { test, expect } from "../../support/fixtures";
+import { itemSchema } from "../schemas/item.schema";
+
+test("Validar item @api", async ({ meuClient }) => {
+  const response = await meuClient.getItem("1");
+  expect(response.ok()).toBeTruthy();
+
+  const data = await response.json();
+  const validation = itemSchema.safeParse(data);
+  expect(validation.success).toBeTruthy();
+});
+```
 
 ---
 

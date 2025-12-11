@@ -1,12 +1,14 @@
 import { test as base, TestInfo } from "@playwright/test";
 import { LoginPage } from "../pages/loginPage";
 import { ProductPage } from "../pages/productPage";
+import { SwapiClient } from "../api/clients/swapiClient";
 import { captureScreenshot } from "./utils";
 
 // Definimos quais fixtures (objetos) nossos testes vão ter acesso
 type MyFixtures = {
   loginPage: LoginPage;
   productPage: ProductPage;
+  swapiClient: SwapiClient;
   screenShot: () => Promise<void>;
 };
 
@@ -21,6 +23,12 @@ export const test = base.extend<MyFixtures>({
   productPage: async ({ page }, use) => {
     const productPage = new ProductPage(page);
     await use(productPage);
+  },
+
+  // Fixture para SwapiClient (API)
+  swapiClient: async ({ request }, use) => {
+    const swapiClient = new SwapiClient(request);
+    await use(swapiClient);
   },
 
   // Fixture que encapsula a lógica do utils.ts
