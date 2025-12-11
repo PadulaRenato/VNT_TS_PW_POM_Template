@@ -19,7 +19,7 @@ coverage
 .nyc_output
 
 # Playwright test results
-allure-results
+reports
 screenshots
 test-results/
 

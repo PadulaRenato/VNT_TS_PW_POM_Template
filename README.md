@@ -119,6 +119,12 @@ Para manter o SQL organizado e reutilizável, use o padrão de Queries.
 
 Projeto de automação de testes End-to-End para validar o fluxo de [Descreva o objetivo, ex: Vendas, Cadastro, etc].
 
+## 🌐 Aplicação Sob Teste
+
+O site utilizado para os testes de exemplo é um ambiente controlado criado para fins didáticos:
+
+- **URL:** [https://padularenato.github.io/test/home.html](https://padularenato.github.io/test/home.html)
+
 ## 📋 Pré-requisitos
 
 - [Node.js](https://nodejs.org/) (Versão 16 ou superior)

@@ -7,9 +7,18 @@
 import { FullConfig } from "@playwright/test";
 import { closeConnection } from "./sqlserverUtils";
 import { UserQueries } from "../queries/UserQueries";
+import fs from "fs";
+import path from "path";
 
 async function globalSetup(config: FullConfig) {
   console.log("Global Setup: Iniciando execução da suíte de testes...");
+
+  // Garante que a pasta 'reports' exista para centralizar logs, html e screenshots
+  const reportsDir = path.resolve(process.cwd(), "reports");
+  if (!fs.existsSync(reportsDir)) {
+    console.log("Global Setup: Criando diretório 'reports'...");
+    fs.mkdirSync(reportsDir, { recursive: true });
+  }
 
   //realiza conexao no banco de dados e armazena as informações  de login
   try {
